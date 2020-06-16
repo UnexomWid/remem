@@ -31,18 +31,29 @@ void* operator new[](size_t size, const char* who, size_t line = 0, const char* 
 void  operator delete[](void* ptr) noexcept;
 
 #if defined(REMEM_ENABLE_MAPPING)
-    namespace re {
-        const std::unordered_map<void*, std::string>& mem() noexcept;
 
-        void memPrint() noexcept;
+namespace re {
+    struct AddressInfo {
+        std::string who;
+        size_t size;
 
-        void* alloc(size_t&  size, const char* who, size_t line = 0, const char* file = nullptr);
-        void* alloc(size_t&& size, const char* who, size_t line = 0, const char* file = nullptr);
+        AddressInfo() { }
+        AddressInfo(const char* w, size_t sz) : who(w), size(sz) { }
+    };
 
-        void* expand(void* ptr, size_t& size, size_t line = 0, const char* file = nullptr);
+    const std::unordered_map<void*, AddressInfo>& mem() noexcept;
 
-        void  free(void* ptr) noexcept;
-    }
+    void   memPrint() noexcept;
+    size_t memSize()  noexcept;
+
+    void* alloc(size_t&  size, const char* who, size_t line = 0, const char* file = nullptr);
+    void* alloc(size_t&& size, const char* who, size_t line = 0, const char* file = nullptr);
+
+    void* expand(void* ptr, size_t& size, size_t line = 0, const char* file = nullptr);
+
+    void  free(void* ptr) noexcept;
+}
+
 #endif
 
 #endif

@@ -50,7 +50,7 @@ void adjustSize(size_t &size) {
 
 void* operator new[](size_t size, const char* who, size_t line, const char* file) {
     #if !defined(REMEM_DISABLE_ALIGNING)
-    adjustSize(size);
+        adjustSize(size);
     #endif
 
     void* ptr = malloc(size);

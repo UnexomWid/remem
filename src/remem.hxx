@@ -30,7 +30,11 @@
 void* operator new[](size_t size, const char* who, size_t line = 0, const char* file = nullptr);
 void  operator delete[](void* ptr) noexcept;
 
-#if defined(REMEM_ENABLE_MAPPING)
+#if defined(REMEM_ENABLE)
+    #define new(who) new(who, __LINE__, __FILE__)
+#else
+    #define new(who) new
+#endif
 
 namespace re {
     struct AddressInfo {
@@ -53,7 +57,5 @@ namespace re {
 
     void  free(void* ptr) noexcept;
 }
-
-#endif
 
 #endif

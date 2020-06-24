@@ -27,14 +27,12 @@
 #include <cstddef>
 #include <unordered_map>
 
-void* operator new[](size_t size, const char* who, size_t line = 0, const char* file = nullptr);
-void  operator delete[](void* ptr) noexcept;
-
 #if defined(REMEM_ENABLE)
     #define new(who) new(who, __LINE__, __FILE__)
-#else
-    #define new(who) new
 #endif
+
+void* operator new[](size_t size, const char* who = nullptr, size_t line = 0, const char* file = nullptr);
+void  operator delete[](void* ptr) noexcept;
 
 namespace re {
     struct AddressInfo {
@@ -50,9 +48,10 @@ namespace re {
     void   memPrint() noexcept;
     size_t memSize()  noexcept;
 
-    void* alloc(size_t&  size, const char* who, size_t line = 0, const char* file = nullptr);
-    void* alloc(size_t&& size, const char* who, size_t line = 0, const char* file = nullptr);
+    void* malloc(size_t size, const char* who = nullptr, size_t = 0, const char* file = nullptr);
+    void* alloc(size_t& size, const char* who = nullptr, size_t line = 0, const char* file = nullptr);
 
+    void* realloc(void* ptr, size_t size, size_t line = 0, const char* file = nullptr);
     void* expand(void* ptr, size_t& size, size_t line = 0, const char* file = nullptr);
 
     void  free(void* ptr) noexcept;

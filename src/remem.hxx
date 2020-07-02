@@ -28,10 +28,11 @@
 #include <unordered_map>
 
 #if defined(REMEM_ENABLE)
-    #define new(who) new(who, __LINE__, __FILE__)
+    #define new(who) new(who, __FILE__, __LINE__)
 #endif
 
-void* operator new[](size_t size, const char* who = nullptr, size_t line = 0, const char* file = nullptr);
+void* operator new[](size_t size);
+void* operator new[](size_t size, const char* who, const char* file, size_t line);
 void  operator delete[](void* ptr) noexcept;
 
 namespace re {
@@ -48,11 +49,11 @@ namespace re {
     void   memPrint() noexcept;
     size_t memSize()  noexcept;
 
-    void* malloc(size_t size, const char* who = nullptr, size_t = 0, const char* file = nullptr);
-    void* alloc(size_t& size, const char* who = nullptr, size_t line = 0, const char* file = nullptr);
+    void* malloc(size_t size, const char* who = nullptr, const char* file = nullptr, size_t = 0);
+    void* alloc(size_t& size, const char* who = nullptr, const char* file = nullptr, size_t line = 0);
 
-    void* realloc(void* ptr, size_t size, size_t line = 0, const char* file = nullptr);
-    void* expand(void* ptr, size_t& size, size_t line = 0, const char* file = nullptr);
+    void* realloc(void* ptr, size_t size, const char* file = nullptr, size_t line = 0);
+    void* expand(void* ptr, size_t& size, const char* file = nullptr, size_t line = 0);
 
     void  free(void* ptr) noexcept;
 }

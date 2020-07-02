@@ -48,7 +48,7 @@ void adjustSize(size_t &size) {
     ++size;
 }
 
-void* operator new[](size_t size, const char* who, size_t line, const char* file) {
+void* allocateBlock(size_t size, const char* who = nullptr, const char* file = nullptr, size_t line = 0) {
     #if !defined(REMEM_DISABLE_ALIGNING)
         adjustSize(size);
     #endif
@@ -59,21 +59,29 @@ void* operator new[](size_t size, const char* who, size_t line, const char* file
         throw std::bad_alloc();
 
     #if defined(REMEM_ENABLE)
-        map[ptr] = re::AddressInfo(who, size);
+        map[ptr] = re::AddressInfo(who == nullptr ? "unknown" : who, size);
         totalSize += size;
 
         #if defined(REMEM_ENABLE_LOGGING)
             if(who == nullptr)
                 printf("[memory] Allocated 'unknown' (%p) | %zu byte(s)\n", ptr, size);
-            else if(line == 0)
-                printf("[memory] Allocated '%s' (%p) | %zu byte(s)\n", who, ptr, size);
             else if(file == nullptr)
-                printf("[memory] Allocated '%s' (%p) | %zu byte(s) at line %zu\n", who, ptr, size, line);
-            else printf("[memory] Allocated '%s' (%p) | %zu byte(s) at line %zu in '%s'\n", who, ptr, size, line, file);
+                printf("[memory] Allocated '%s' (%p) | %zu byte(s)\n", who, ptr, size);
+            else if(line == 0)
+                printf("[memory] Allocated '%s' (%p) | %zu byte(s) in '%s'\n", who, ptr, size, file);
+            else printf("[memory] Allocated '%s' (%p) | %zu byte(s) in '%s' at line %zu\n", who, ptr, size, file, line);
         #endif
     #endif
 
     return ptr;
+}
+
+void* operator new[](size_t size) {
+    return allocateBlock(size);
+}
+
+void* operator new[](size_t size, const char* who, const char* file, size_t line) {
+    return allocateBlock(size, who, file, line);
 }
 
 void operator delete[](void* ptr) noexcept {
@@ -123,7 +131,11 @@ size_t re::memSize() noexcept {
     #endif
 }
 
-void* re::malloc(size_t size, const char* who, size_t line, const char* file) {
+void* re::malloc(size_t size, const char* who, const char* file, size_t line) {
+    return allocateBlock(size, who, file, line);
+}
+
+void* re::alloc(size_t&  size, const char* who, const char* file, size_t line) {
     #if !defined(REMEM_DISABLE_ALIGNING)
         adjustSize(size);
     #endif
@@ -140,46 +152,18 @@ void* re::malloc(size_t size, const char* who, size_t line, const char* file) {
         #if defined(REMEM_ENABLE_LOGGING)
             if(who == nullptr)
                 printf("[memory] Allocated 'unknown' (%p) | %zu byte(s)\n", ptr, size);
-            else if(line == 0)
-                printf("[memory] Allocated '%s' (%p) | %zu byte(s)\n", who, ptr, size);
             else if(file == nullptr)
-                printf("[memory] Allocated '%s' (%p) | %zu byte(s) at line %zu\n", who, ptr, size, line);
-            else printf("[memory] Allocated '%s' (%p) | %zu byte(s) at line %zu in '%s'\n", who, ptr, size, line, file);
+                printf("[memory] Allocated '%s' (%p) | %zu byte(s)\n", who, ptr, size);
+            else if(line == 0)
+                printf("[memory] Allocated '%s' (%p) | %zu byte(s) in '%s'\n", who, ptr, size, file);
+            else printf("[memory] Allocated '%s' (%p) | %zu byte(s) in '%s' at line %zu\n", who, ptr, size, file, line);
         #endif
     #endif
 
     return ptr;
 }
 
-void* re::alloc(size_t&  size, const char* who, size_t line, const char* file) {
-    #if !defined(REMEM_DISABLE_ALIGNING)
-        adjustSize(size);
-    #endif
-
-    void* ptr = ::malloc(size);
-
-    if(!ptr)
-        throw std::bad_alloc();
-
-    #if defined(REMEM_ENABLE)
-        map[ptr] = re::AddressInfo(who == nullptr ? "unknown" : who, size);
-        totalSize += size;
-
-        #if defined(REMEM_ENABLE_LOGGING)
-            if(who == nullptr)
-                printf("[memory] Allocated 'unknown' (%p) | %zu byte(s)\n", ptr, size);
-            else if(line == 0)
-                printf("[memory] Allocated '%s' (%p) | %zu byte(s)\n", who, ptr, size);
-            else if(file == nullptr)
-                printf("[memory] Allocated '%s' (%p) | %zu byte(s) at line %zu\n", who, ptr, size, line);
-            else printf("[memory] Allocated '%s' (%p) | %zu byte(s) at line %zu in '%s'\n", who, ptr, size, line, file);
-        #endif
-    #endif
-
-    return ptr;
-}
-
-void* re::realloc(void* ptr, size_t size, size_t line, const char* file) {
+void* re::realloc(void* ptr, size_t size, const char* file, size_t line) {
     #if !defined(REMEM_DISABLE_ALIGNING)
         adjustSize(size);
     #endif
@@ -192,11 +176,11 @@ void* re::realloc(void* ptr, size_t size, size_t line, const char* file) {
     #if defined(REMEM_ENABLE)
         if(map.find(ptr) != map.end()) {
             #if defined(REMEM_ENABLE_LOGGING)
-                if(line == 0)
+                if(file == nullptr)
                     printf("[memory] Reallocated '%s' (%p) | %zu -> %zu byte(s)\n", map[ptr].who.c_str(), newPtr, map[ptr].size, size);
-                else if(file == nullptr)
-                    printf("[memory] Reallocated '%s' (%p) | %zu -> %zu byte(s) at line %zu\n", map[ptr].who.c_str(), newPtr, map[ptr].size, size, line);
-                else printf("[memory] Reallocated '%s' (%p) | %zu -> %zu byte(s) at line %zu in '%s'\n", map[ptr].who.c_str(), newPtr, map[ptr].size, size, line, file);
+                else if(line == 0)
+                    printf("[memory] Reallocated '%s' (%p) | %zu -> %zu byte(s) in '%s'\n", map[ptr].who.c_str(), newPtr, map[ptr].size, size, file);
+                else printf("[memory] Reallocated '%s' (%p) | %zu -> %zu byte(s) in '%s' at line %zu\n", map[ptr].who.c_str(), newPtr, map[ptr].size, size, file, line);
             #endif
 
             totalSize -= map[ptr].size;
@@ -214,7 +198,7 @@ void* re::realloc(void* ptr, size_t size, size_t line, const char* file) {
     return newPtr;
 }
 
-void* re::expand(void* ptr, size_t& size, size_t line, const char* file) {
+void* re::expand(void* ptr, size_t& size, const char* file, size_t line) {
     size *= REMEM_EXPAND_FACTOR;
 
     #if !defined(REMEM_DISABLE_ALIGNING)
@@ -229,11 +213,11 @@ void* re::expand(void* ptr, size_t& size, size_t line, const char* file) {
     #if defined(REMEM_ENABLE)
         if(map.find(ptr) != map.end()) {
             #if defined(REMEM_ENABLE_LOGGING)
-                if(line == 0)
+                if(file == nullptr)
                     printf("[memory] Reallocated '%s' (%p) | %zu -> %zu byte(s)\n", map[ptr].who.c_str(), newPtr, map[ptr].size, size);
-                else if(file == nullptr)
-                    printf("[memory] Reallocated '%s' (%p) | %zu -> %zu byte(s) at line %zu\n", map[ptr].who.c_str(), newPtr, map[ptr].size, size, line);
-                else printf("[memory] Reallocated '%s' (%p) | %zu -> %zu byte(s) at line %zu in '%s'\n", map[ptr].who.c_str(), newPtr, map[ptr].size, size, line, file);
+                else if(line == 0)
+                    printf("[memory] Reallocated '%s' (%p) | %zu -> %zu byte(s) in '%s'\n", map[ptr].who.c_str(), newPtr, map[ptr].size, size, file);
+                else printf("[memory] Reallocated '%s' (%p) | %zu -> %zu byte(s) in '%s' at line %zu\n", map[ptr].who.c_str(), newPtr, map[ptr].size, size, file, line);
             #endif
 
             totalSize -= map[ptr].size;

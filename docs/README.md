@@ -178,7 +178,7 @@ Like `re::malloc`, but takes the size by reference (i.e. the size will be update
 
 You should use `re::alloc` instead of `re::malloc` when you want to allocate memory for a buffer that may grow in size.
 
-Because the size will be rounded, it can be used for future calls to the `re::expand` function (see below)
+Because the size will be rounded, it can be used for future calls to the `re::expand` function (see below).
 
 ### realloc
 
@@ -191,7 +191,7 @@ void* re::realloc(void* ptr,
 
 Like `realloc`, but acts like the `new[]` overload (i.e. stores the address in the map, rounds the size).
 
-This function should be used only to reallocate memory that was previously allocated with `re::malloc` or `re::alloc`.
+This function should only be used to reallocate memory that was previously allocated with either `re::malloc` or `re::alloc`.
 
 ##### Params
 

@@ -1,6 +1,10 @@
+<p align="center">
+  <img src="public/logo.png" alt="Remem">
+</p>
+
 # About <a href="https://en.wikipedia.org/wiki/C%2B%2B17"><img align="right" src="https://img.shields.io/badge/C%2B%2B-17-00599C?logo=C%2B%2B" alt="C++ 17" /></a>
 
-**Remem** is a library that provides memory allocation tracking via address mapping, as well as automatic size alignment and exponential memory expansion.
+**Remem** is a C++ library that provides memory allocation tracking via address mapping, as well as automatic size alignment and exponential memory expansion.
 
 # Documentation
 

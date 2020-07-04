@@ -2,7 +2,6 @@
 
 This is the official documentation for [Remem](https://github.com/UnexomWid/remem).
 
-[Documentation](#documentation)  
 [Introduction](#introduction)  
 [Overloads](#overloads)  
 [Macro](#macro)  

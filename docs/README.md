@@ -10,7 +10,7 @@ This is the official documentation for [Remem](https://github.com/UnexomWid/reme
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[AddressInfo](#addressinfo)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Constructors](#constructors)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Fields](#fields)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Memory map](#memory-map)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Memory Map](#memory-map)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Memory Management](#memory-management)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[malloc](#malloc)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[alloc](#alloc)  
@@ -101,7 +101,7 @@ size_t      size;
 - **who** - a description of the memory block
 - **size** - the size of the memory block
 
-## Memory map
+## Memory Map
 
 To access the memory map, which contains information about all of the allocated memory blocks, use the following function:
 
@@ -114,10 +114,10 @@ The `re::mem()` function returns a map that stores `address`->`AddressInfo` pair
 If you only want to print the memory map, use the following function:
 
 ```cpp
-void memPrint() noexcept;
+void re::memPrint() noexcept;
 ```
 
-The `memPrint` function pretty-prints the contents of the memory map. Here's an example:
+The `re::memPrint` function pretty-prints the contents of the memory map. Here's an example:
 
 ```
 [memory] Map: 20 byte(s)
@@ -130,10 +130,10 @@ The `memPrint` function pretty-prints the contents of the memory map. Here's an 
 To get the total size of all memory blocks in the map, use the following function:
 
 ```cpp
-size_t memSize()  noexcept;
+size_t re::memSize()  noexcept;
 ```
 
-The `memSize` function returns the total size of all memory blocks that are present in the memory map.
+The `re::memSize` function returns the total size of all memory blocks that are present in the memory map.
 
 ## Memory Management
 

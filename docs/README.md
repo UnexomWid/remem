@@ -110,6 +110,8 @@ const std::unordered_map<void*, AddressInfo>& re::mem() noexcept;
 
 The `re::mem()` function returns a map that stores `address`->`AddressInfo` pairs, where `address` is `void*`.
 
+This function is only defined if address mapping is enabled (see below [Options](#options)).
+
 If you only want to print the memory map, use the following function:
 
 ```cpp
@@ -126,6 +128,8 @@ The `re::memPrint` function pretty-prints the contents of the memory map. Here's
 
 > Note: if no description is provided for a memory block, `unknown` will be printed.
 
+This function is also only defined if address mapping is enabled (see below [Options](#options)).
+
 To get the total size of all memory blocks in the map, use the following function:
 
 ```cpp
@@ -133,6 +137,8 @@ size_t re::memSize()  noexcept;
 ```
 
 The `re::memSize` function returns the total size of all memory blocks that are present in the memory map.
+
+This function is also only defined if address mapping is enabled (see below [Options](#options)).
 
 ## Memory Management
 

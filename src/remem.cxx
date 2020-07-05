@@ -25,7 +25,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#if defined(REMEM_ENABLE)
+#if defined(REMEM_ENABLE_MAPPING)
     std::unordered_map<void*, re::AddressInfo> map;
     size_t totalSize = 0;
 #endif
@@ -58,7 +58,7 @@ void* allocateBlock(size_t size, const char* who = nullptr, const char* file = n
     if(!ptr)
         throw std::bad_alloc();
 
-    #if defined(REMEM_ENABLE)
+    #if defined(REMEM_ENABLE_MAPPING)
         map[ptr] = re::AddressInfo(who == nullptr ? "unknown" : who, size);
         totalSize += size;
 
@@ -88,7 +88,7 @@ void operator delete[](void* ptr) noexcept {
     if (ptr) {
         ::free(ptr);
 
-        #if defined(REMEM_ENABLE)
+        #if defined(REMEM_ENABLE_MAPPING)
             if(map.find(ptr) != map.end()) {
                 #if defined(REMEM_ENABLE_LOGGING)
                     printf("[memory] Freed '%s' (%p) | %zu byte(s)\n", map[ptr].who.c_str(), ptr, map[ptr].size);
@@ -99,7 +99,7 @@ void operator delete[](void* ptr) noexcept {
             }
         #endif
     } else {
-        #if defined(REMEM_ENABLE) && defined(REMEM_ENABLE_LOGGING)
+        #if defined(REMEM_ENABLE_MAPPING) && defined(REMEM_ENABLE_LOGGING)
             if(map.find(ptr) != map.end())
                 printf("[memory] Attempted to free nullptr");
         #endif
@@ -107,13 +107,13 @@ void operator delete[](void* ptr) noexcept {
 }
 
 const std::unordered_map<void*, re::AddressInfo>& re::mem() noexcept {
-    #ifdef REMEM_ENABLE
+    #if defined(REMEM_ENABLE)
         return map;
     #endif
 }
 
 void re::memPrint() noexcept {
-    #ifdef REMEM_ENABLE
+    #if defined(REMEM_ENABLE)
         if(map.size() != 0) {
             printf("\n[memory] Map: %zu byte(s)\n", totalSize);
             for (auto entry : mem())
@@ -126,7 +126,7 @@ void re::memPrint() noexcept {
 }
 
 size_t re::memSize() noexcept {
-    #ifdef REMEM_ENABLE
+    #if defined(REMEM_ENABLE)
         return totalSize;
     #else
         return 0;
@@ -143,7 +143,7 @@ void* re::malloc(size_t size, const char* who, const char* file, size_t line) {
         if(!ptr)
             throw std::bad_alloc();
 
-    #if defined(REMEM_ENABLE)
+    #if defined(REMEM_ENABLE_MAPPING)
         map[ptr] = re::AddressInfo(who == nullptr ? "unknown" : who, size);
         totalSize += size;
 
@@ -171,7 +171,7 @@ void* re::alloc(size_t&  size, const char* who, const char* file, size_t line) {
     if(!ptr)
         throw std::bad_alloc();
 
-    #if defined(REMEM_ENABLE)
+    #if defined(REMEM_ENABLE_MAPPING)
         map[ptr] = re::AddressInfo(who == nullptr ? "unknown" : who, size);
         totalSize += size;
 
@@ -199,7 +199,7 @@ void* re::realloc(void* ptr, size_t size, const char* file, size_t line) {
     if(!newPtr)
         throw std::bad_alloc();
 
-    #if defined(REMEM_ENABLE)
+    #if defined(REMEM_ENABLE_MAPPING)
         if(map.find(ptr) != map.end()) {
             #if defined(REMEM_ENABLE_LOGGING)
                 if(file == nullptr)
@@ -236,7 +236,7 @@ void* re::expand(void* ptr, size_t& size, const char* file, size_t line) {
     if(!newPtr)
         throw std::bad_alloc();
 
-    #if defined(REMEM_ENABLE)
+    #if defined(REMEM_ENABLE_MAPPING)
         if(map.find(ptr) != map.end()) {
             #if defined(REMEM_ENABLE_LOGGING)
                 if(file == nullptr)
@@ -265,7 +265,7 @@ void re::free(void* ptr) noexcept {
     if (ptr) {
         ::free(ptr);
 
-        #if defined(REMEM_ENABLE)
+        #if defined(REMEM_ENABLE_MAPPING)
             if(map.find(ptr) != map.end()) {
                 #if defined(REMEM_ENABLE_LOGGING)
                     printf("[memory] Freed '%s' (%p) | %zu byte(s)\n", map[ptr].who.c_str(), ptr, map[ptr].size);
@@ -276,7 +276,7 @@ void re::free(void* ptr) noexcept {
             }
         #endif
     } else {
-        #if defined(REMEM_ENABLE) && defined(REMEM_ENABLE_LOGGING)
+        #if defined(REMEM_ENABLE_MAPPING) && defined(REMEM_ENABLE_LOGGING)
             if(map.find(ptr) != map.end())
                 printf("[memory] Attempted to free nullptr");
         #endif

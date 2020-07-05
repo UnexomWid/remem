@@ -27,7 +27,7 @@
 #include <cstddef>
 #include <unordered_map>
 
-#if defined(REMEM_ENABLE)
+#if defined(REMEM_ENABLE_MAPPING)
     #define new(who) new(who, __FILE__, __LINE__)
 #endif
 

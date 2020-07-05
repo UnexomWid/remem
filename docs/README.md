@@ -255,7 +255,7 @@ If address mapping is enabled, it will only add the allocated memory blocks to t
 macro is defined, every memory operation will be logged (such as `new[]`, `re::malloc` and `re::free`). Note that if address mapping is disabled, logging will also be
 disabled even if the `REMEM_ENABLE_LOGGING` macro is defined.
 
-By default, Remem will round the memory block size to the nearest power of 2 that is >= size. However, if the `REMEM_DISABLE_ALIGNING` macro is defined,
+By default, Remem will round the memory block size to the nearest power of 2 that is greater than or equal to the size. However, if the `REMEM_DISABLE_ALIGNING` macro is defined,
 this will no longer happen in any allocation function (`new[]`, `re::malloc`, `re::alloc`, `re::realloc` and `re::expand`).
 
 It's also possible to disable aligning only for `re::malloc` and `re::realloc`, by using the `REMEM_DISABLE_MALLOC_ALIGNING` and `REMEM_DISABLE_REALLOC_ALIGNING`

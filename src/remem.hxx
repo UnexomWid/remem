@@ -49,7 +49,7 @@ namespace re {
     void   memPrint() noexcept;
     size_t memSize()  noexcept;
 
-    void* malloc(size_t size, const char* who = nullptr, const char* file = nullptr, size_t = 0);
+    void* malloc(size_t size, const char* who = nullptr, const char* file = nullptr, size_t line = 0);
     void* alloc(size_t& size, const char* who = nullptr, const char* file = nullptr, size_t line = 0);
 
     void* realloc(void* ptr, size_t size, const char* file = nullptr, size_t line = 0);

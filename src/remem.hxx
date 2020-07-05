@@ -29,6 +29,8 @@
 
 #if defined(REMEM_ENABLE_MAPPING)
     #define new(who) new(who, __FILE__, __LINE__)
+#else
+    #define new(who) new
 #endif
 
 void* operator new[](size_t size);
@@ -44,10 +46,12 @@ namespace re {
         AddressInfo(const char* w, size_t sz) : who(w), size(sz) { }
     };
 
-    const std::unordered_map<void*, AddressInfo>& mem() noexcept;
+    #if defined(REMEM_ENABLE_MAPPING)
+        const std::unordered_map<void*, AddressInfo>& mem() noexcept;
 
-    void   memPrint() noexcept;
-    size_t memSize()  noexcept;
+        void   memPrint() noexcept;
+        size_t memSize()  noexcept;
+    #endif
 
     void* malloc(size_t size, const char* who = nullptr, const char* file = nullptr, size_t line = 0);
     void* alloc(size_t& size, const char* who = nullptr, const char* file = nullptr, size_t line = 0);

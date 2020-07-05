@@ -106,14 +106,12 @@ void operator delete[](void* ptr) noexcept {
     }
 }
 
-const std::unordered_map<void*, re::AddressInfo>& re::mem() noexcept {
-    #if defined(REMEM_ENABLE)
+#if defined(REMEM_ENABLE_MAPPING)
+    const std::unordered_map<void*, re::AddressInfo>& re::mem() noexcept {
         return map;
-    #endif
-}
+    }
 
-void re::memPrint() noexcept {
-    #if defined(REMEM_ENABLE)
+    void re::memPrint() noexcept {
         if(map.size() != 0) {
             printf("\n[memory] Map: %zu byte(s)\n", totalSize);
             for (auto entry : mem())
@@ -122,16 +120,12 @@ void re::memPrint() noexcept {
         } else {
             printf("\n[memory] Map: empty\n");
         }
-    #endif
-}
+    }
 
-size_t re::memSize() noexcept {
-    #if defined(REMEM_ENABLE)
+    size_t re::memSize() noexcept {
         return totalSize;
-    #else
-        return 0;
-    #endif
-}
+    }
+#endif
 
 void* re::malloc(size_t size, const char* who, const char* file, size_t line) {
     #if !defined(REMEM_DISABLE_MALLOC_ALIGNING) && !defined(REMEM_DISABLE_ALIGNING)

@@ -162,6 +162,10 @@ Like `malloc`, but acts like the `new[]` overload (i.e. stores the address in th
 - **file** - the file in which the allocation took place (can be **\_\_FILE__**)
 - **line** - the line at which the allocation took place (can be **\_\_LINE__**)
 
+##### Throws
+
+`std::bad_alloc` exception if the function cannot allocate memory.
+
 ### alloc
 
 ```cpp
@@ -186,6 +190,10 @@ You should use `re::alloc` instead of `re::malloc` when you want to allocate mem
 
 Because the size will be rounded, it can be used for future calls to the `re::expand` function (see below).
 
+##### Throws
+
+`std::bad_alloc` exception if the function cannot allocate memory.
+
 ### realloc
 
 ```cpp
@@ -205,6 +213,10 @@ This function should only be used to reallocate memory that was previously alloc
 - **size** - the new size of the memory block
 - **file** - the file in which the reallocation took place (can be **\_\_FILE__**)
 - **line** - the line at which the reallocation took place (can be **\_\_LINE__**)
+
+##### Throws
+
+`std::bad_alloc` exception if the function cannot reallocate memory.
 
 ### expand
 
@@ -234,6 +246,10 @@ int* buffer = re::alloc("Buffer", bufferSize, __FILE__, __LINE__); // bufferSize
 ...
 buffer = re::expand(buffer, bufferSize, __FILE__, __LINE__); // bufferSize becomes 32
 ```
+
+##### Throws
+
+`std::bad_alloc` exception if the function cannot expand memory.
 
 ### free
 

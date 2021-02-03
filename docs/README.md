@@ -283,7 +283,7 @@ this will no longer happen in any allocation function (`new[]`, `re::malloc`, `r
 
 It's also possible to disable aligning only for `re::realloc`, by using the `REMEM_DISABLE_REALLOC_ALIGNING`
 macro. Note that if `REMEM_DISABLE_ALIGNING` is defined, it disables aligning for this function even if the macro is not defined (i.e. this macro only
-take effect when `REMEM_DISABLE_ALIGNING` is not defined).
+takes effect when `REMEM_DISABLE_ALIGNING` is not defined).
 
 The `re::expand` function will grow the memory block size by a factor of `2`. However, the factor can be changed by defining the `REMEM_EXPAND_FACTOR` macro.
 (e.g. `REMEM_EXPAND_FACTOR=1.5`). If you change the factor to a value other than 2, you should also disable aliging with the `REMEM_DISABLE_ALIGNING` macro.

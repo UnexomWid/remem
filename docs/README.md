@@ -61,19 +61,26 @@ The differences between these overloads and the standard `new[]` are:
 
 ## Macro
 
-Remem defines a macro as follows:
+Remem defines multiple macros as follows:
 
 ```cpp
 #define new(who) new(who, __FILE__, __LINE__)
+
+#define REMEM_ALLOC(size, who)   re::alloc(size, who, __FILE__, __LINE__)
+#define REMEM_MALLOC(size, who)  re::malloc(size, who, __FILE__, __LINE__)
+#define REMEM_REALLOC(ptr, size) re::realloc(ptr, size, __FILE__, __LINE__)
+#define REMEM_EXPAND(ptr, size)  re::expand(ptr, size, __FILE__, __LINE__)
+#define REMEM_FREE(ptr)          re::free(ptr)
 ```
 
-Therefore, you can indirectly invoke the second `new[]` overload by just passing a string, like this:
+Therefore, you can indirectly invoke the second `new[]` overload, and the memory management functions, by just passing a string, like this:
 
 ```cpp
 int* buffer = new("Buffer") int[255];
+char* buffer2 = REMEM_MALLOC(255, "Buffer");
 ```
 
-The `file` and `line` will automatically be provided by the macro.
+The `file` and `line` will automatically be provided by the macros.
 
 # Namespace
 
@@ -115,10 +122,10 @@ This function is only defined if address mapping is enabled (see below [Options]
 If you only want to print the memory map, use the following function:
 
 ```cpp
-void re::memPrint() noexcept;
+void re::mem_print() noexcept;
 ```
 
-The `re::memPrint` function pretty-prints the contents of the memory map. Here's an example:
+The `re::mem_print` function pretty-prints the contents of the memory map. Here's an example:
 
 ```
 [memory] Map: 20 byte(s)
@@ -133,10 +140,10 @@ This function is also only defined if address mapping is enabled (see below [Opt
 To get the total size of all memory blocks in the map, use the following function:
 
 ```cpp
-size_t re::memSize()  noexcept;
+size_t re::mem_size()  noexcept;
 ```
 
-The `re::memSize` function returns the total size of all memory blocks that are present in the memory map.
+The `re::mem_size` function returns the total size of all memory blocks that are present in the memory map.
 
 This function is also only defined if address mapping is enabled (see below [Options](#options)).
 
@@ -175,7 +182,7 @@ void* re::alloc(size_t& size,
                 size_t line = 0);
 ```
 
-Like `re::malloc`, but takes the size by reference (i.e. the size will be updated to the new, rounded one).
+Like `re::malloc`, but rounds the size for alignment (if enabled) and takes the size by reference (i.e. the size will be updated to the new, rounded one).
 
 ##### Params
 
@@ -268,14 +275,14 @@ Like `free`, but deletes the address entry from the memory map.
 By default, address mapping is disabled. You can enable it by defining the `REMEM_ENABLE_MAPPING` macro (e.g. in the CMakeLists.txt file).
 
 If address mapping is enabled, it will only add the allocated memory blocks to the map (which can be accessed via `re::mem()`). However, if the `REMEM_ENABLE_LOGGING`
-macro is defined, every memory operation will be logged (such as `new[]`, `re::malloc` and `re::free`). Note that if address mapping is disabled, logging will also be
+macro is defined, every memory operation will be logged (such as `new[]`, `re::malloc`, and `re::free`). Note that if address mapping is disabled, logging will also be
 disabled even if the `REMEM_ENABLE_LOGGING` macro is defined.
 
 By default, Remem will round the memory block size to the nearest power of 2 that is greater than or equal to the size. However, if the `REMEM_DISABLE_ALIGNING` macro is defined,
 this will no longer happen in any allocation function (`new[]`, `re::malloc`, `re::alloc`, `re::realloc` and `re::expand`).
 
-It's also possible to disable aligning only for `re::malloc` and `re::realloc`, by using the `REMEM_DISABLE_MALLOC_ALIGNING` and `REMEM_DISABLE_REALLOC_ALIGNING`
-macros. Note that if `REMEM_DISABLE_ALIGNING` is defined, it disables aligning for these functions even if their macros are not defined (i.e. these macros only
+It's also possible to disable aligning only for `re::realloc`, by using the `REMEM_DISABLE_REALLOC_ALIGNING`
+macros. Note that if `REMEM_DISABLE_ALIGNING` is defined, it disables aligning for this function even if their macro is not defined (i.e. this macro only
 take effect when `REMEM_DISABLE_ALIGNING` is not defined).
 
 The `re::expand` function will grow the memory block size by a factor of `2`. However, the factor can be changed by defining the `REMEM_EXPAND_FACTOR` macro.

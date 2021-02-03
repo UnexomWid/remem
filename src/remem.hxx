@@ -33,6 +33,12 @@
     #define new(who) new
 #endif
 
+#define REMEM_ALLOC(size, who) re::alloc(size, who, __FILE__, __LINE__)
+#define REMEM_MALLOC(size, who) re::malloc(size, who, __FILE__, __LINE__)
+#define REMEM_REALLOC(ptr, size) re::realloc(ptr, size, __FILE__, __LINE__)
+#define REMEM_EXPAND(ptr, size) re::expand(ptr, size, __FILE__, __LINE__)
+#define REMEM_FREE(ptr) re::free(ptr)
+
 void* operator new[](size_t size);
 void* operator new[](size_t size, const char* who, const char* file, size_t line);
 void  operator delete[](void* ptr) noexcept;

@@ -160,7 +160,7 @@ void* re::malloc(size_t size,
                  size_t line = 0);
 ```
 
-Like `malloc`, but acts like the `new[]` overload (i.e. stores the address in the map, rounds the size).
+Like `malloc`, but acts like the `new[]` overload (i.e. stores the address in the map) except that it doesn't round the size (for that, use `re::alloc`).
 
 ##### Params
 

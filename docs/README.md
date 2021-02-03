@@ -282,7 +282,7 @@ By default, Remem will round the memory block size to the nearest power of 2 tha
 this will no longer happen in any allocation function (`new[]`, `re::malloc`, `re::alloc`, `re::realloc` and `re::expand`).
 
 It's also possible to disable aligning only for `re::realloc`, by using the `REMEM_DISABLE_REALLOC_ALIGNING`
-macros. Note that if `REMEM_DISABLE_ALIGNING` is defined, it disables aligning for this function even if their macro is not defined (i.e. this macro only
+macro. Note that if `REMEM_DISABLE_ALIGNING` is defined, it disables aligning for this function even if the macro is not defined (i.e. this macro only
 take effect when `REMEM_DISABLE_ALIGNING` is not defined).
 
 The `re::expand` function will grow the memory block size by a factor of `2`. However, the factor can be changed by defining the `REMEM_EXPAND_FACTOR` macro.
